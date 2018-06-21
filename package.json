@@ -1,0 +1,32 @@
+{
+  "name": "rasp-image",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://trieuvo@vs-ssh.visualstudio.com:22/Rasp-Image-Proxy-Server/_ssh/Rasp-Image-Proxy-Server"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "copy-dir": "^0.3.0",
+    "cors": "^2.8.4",
+    "semver": "^5.3.0",
+    "util": "^0.10.3",
+    "dotenv": "^6.0.0",
+    "express": "^4.16.3",
+    "fs-extra": "^6.0.1",
+    "nedb": "^1.8.0",
+    "rimraf": "^2.6.2",
+    "usb-detection": "^3.1.0"
+  },
+  "devDependencies": {
+    "redis": "^2.8.0"
+  }
+}
