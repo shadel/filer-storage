@@ -20,6 +20,20 @@ router.route('/:id')
       })
   });
 
+router.route('/download/:id')
+  .get((req, res) => {
+    const id = req.params.id;
+    controller.getFilePath(id)
+      .then((imagePath) => {
+        res.download(imagePath);
+      })
+      .catch((error) => {
+        res.status(500).json({
+          message: error.message
+        });
+      })
+  });
+
 router.route('/')
   .post((req, res) => {
     const datetime = req.body.datetime;

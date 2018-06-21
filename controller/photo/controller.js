@@ -157,9 +157,23 @@ class PhotoController {
     // });
   }
 
+  getFilePath (id) {
+    return new Promise((resolve, reject) => {
+      this.getImageInfo(id)
+        .then((data) => {
+          const imagePath = __dirname + '/../../Pictures/' + data.name;
+          resolve(imagePath);
+        })
+        .catch((err) => {
+          reject(err);
+        })
+    })
+  }
+
   updateImageInfo(id, name) {
     return new Promise((resolve, reject) => {
       const dataStore = {
+        _id: id,
         name
       };
       photoDB.update({
