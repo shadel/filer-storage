@@ -64,6 +64,7 @@ sub.on("message", function (channel, msg) {
     else if(channel=="c_capture"){
         console.log("capture for id:" + msg);
         cam.halfPressShutter(function(){
+            console.log("half press finished"); 
             setTimeout(function(){
                 cam.capture(true, function(err, name, image) {
                     if(err) {
