@@ -10,6 +10,11 @@ router.route('/')
         result: data
       });
     })
+    .catch((err) => {
+      res.status(500).json({
+        message: err.message
+      });
+    });
   });
 
 router.route('/')
@@ -17,11 +22,16 @@ router.route('/')
     const body = req.body;
     const id = body.id;
     const password = body.password;
-    controller.connect().then((data) => {
+    controller.connect(id, password).then(() => {
       res.status(200).json({
-        result: data
+        result: true
       });
     })
+    .catch((err) => {
+      res.status(500).json({
+        message: err.message
+      });
+    });
   });
 
 module.exports = router;
