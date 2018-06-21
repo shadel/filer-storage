@@ -249,9 +249,9 @@ var minVersionRequired = '2.1.4';
               var action = 'setPostviewImageSize';
               if(self.availableApiList.indexOf(action) === -1) {
                   console.log('setPostviewImageSize is ready');
-                  self.setPostviewImageSize(function(e){
-                      console.log('call setpostview with result:'+e);
-                  })
+                  // self.setPostviewImageSize(function(e){
+                  //     console.log('call setpostview with result:'+e);
+                  // })
               }
 
 
