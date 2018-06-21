@@ -497,9 +497,15 @@ var minVersionRequired = '2.1.4';
        res.on('end', function() {
          console.log("SonyWifi: Retrieved preview image:", photoName);
          //todo Trieu save rawData to Picture photos and output the fileName
+         fs.writeFile(`./Pictures/${photoName}`, Buffer.concat(rawData), function(err) {
+             if(err) {
+                 return console.log(err);
+             }
+         
+             console.log(`File: ${photoName} was saved!`);
+             callback && callback(null, photoName, Buffer.concat(rawData));
+         }); 
 
-
-         callback && callback(null, photoName, Buffer.concat(rawData));
        });
       }).on('error', function(e) {
        callback && callback(e);
