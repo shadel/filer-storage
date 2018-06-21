@@ -161,6 +161,7 @@ class PhotoController {
     return new Promise((resolve, reject) => {
       this.getImageInfo(id)
         .then((data) => {
+          console.log(data);
           const imagePath = __dirname + '/../../Pictures/' + data.name;
           resolve(imagePath);
         })
