@@ -1,6 +1,6 @@
 # Get Photo information
 
-Get list photo in system
+Get photo in system
 
 **URL** : `/api/photo/:id`
 
@@ -26,6 +26,43 @@ There is image information
     
 }
 ```
+
+# Download Photo by id
+
+Get photo in system
+
+**URL** : `/api/photo/:id`
+
+**URL Parameters** : `id=[integer]` where `id` is the ID of the Photo on the
+server.
+
+**Method** : `GET`
+
+## Success Response
+
+**Code** : `200 OK`
+
+**Content examples**
+
+There is image information
+
+```json
+{
+    "result": {
+        "_id": 10,
+        "name": "XYX"
+    }
+}
+```
+
+## Error Responses
+
+**Condition** : If server can't process API
+
+**Code** : `500 Internal Server Error`
+
+**Content** : `{ "message": "Server error"}`
+
 
 # Set datetime 
 
@@ -57,6 +94,15 @@ Updating datetime to server is successful
     "result": true
 }
 ```
+
+## Error Responses
+
+**Condition** : If server can't process API
+
+**Code** : `500 Internal Server Error`
+
+**Content** : `{ "message": "Server error"}`
+
 
 # Inserting photo to database
 

@@ -22,6 +22,14 @@ There're 2 wifi networks
 }
 ```
 
+## Error Responses
+
+**Condition** : If server can't process API
+
+**Code** : `500 Internal Server Error`
+
+**Content** : `{ "message": "Server error"}`
+
 # Connect Wifi
 
 Connect wifi with id and password
@@ -53,3 +61,11 @@ Connecting to wifi network is successful
     "result": true
 }
 ```
+
+## Error Responses
+
+**Condition** : If server can't process API
+
+**Code** : `500 Internal Server Error`
+
+**Content** : `{ "message": "Server error"}`

@@ -5,9 +5,7 @@ const exec = require("child_process").exec;
 
 
 class WifiController {
-  constructor() {
-
-  }
+  constructor() {}
 
   getListWifi() {
     return new Promise((resolve, reject) => {
@@ -18,7 +16,6 @@ class WifiController {
         })
         .then(reject);
     });
-
   }
 
   connect(id, password) {
@@ -30,13 +27,16 @@ class WifiController {
   }
 
   reboot_wlan0(callback) {
-    exec("sudo wpa_cli -i wlan0 reconfigure", (error, stdout, stderr) => {
-      if (!error) {
-        callback();
-      } else {
-        console.log("error while reset wlan0");
-      }
-    });
+    return new Promise((resolve, reject) => {
+      exec("sudo wpa_cli -i wlan0 reconfigure", (error, stdout, stderr) => {
+        if (!error) {
+          resolve()
+        } else {
+          console.log("error while reset wlan0");
+          reject(error);
+        }
+      });
+    })
   }
   getSurroundWifi() {
     return new Promise((resolve, reject) => {
@@ -52,37 +52,35 @@ class WifiController {
     })
   }
   connectWifiWithCredential(ssid, key) {
+    const self = this;
     return new Promise((resolve, reject) => {
-      try{
+      try {
         //todo trieu fix readfile here,
-          fs.readFile('sample_wpa_supplicant.conf', 'utf8', function (err, data) {
-              if (err) {
-                  console.log(err);
-                  reject(err)
-              }
-              var result = data.replace('WPAPWD', key)
-                  .replace('WPASSID', ssid);
+        fs.readFile('sample_wpa_supplicant.conf', 'utf8', function (err, data) {
+          if (err) {
+            console.log(err);
+            reject(err)
+          }
+          var result = data.replace('WPAPWD', key)
+            .replace('WPASSID', ssid);
 
-              fs.writeFile('/etc/wpa_supplicant/wpa_supplicant.conf', result, 'utf8', function (err) {
-                  if (err) {
-                      console.log(err);
-                      reject(err);
-                  } else {
-                      resolve();
-                  }
-              });
+          fs.writeFile('/etc/wpa_supplicant/wpa_supplicant.conf', result, 'utf8', function (err) {
+            if (err) {
+              console.log(err);
+              reject(err);
+            } else {
+              self.reboot_wlan0()
+                .then(resolve)
+                .then(reject)
+            }
           });
+        });
 
+      } catch (e) {
+        console.log('error: ' + e);
       }
-      catch(e){
-          console.log('error: ' + e);
-      }
-
-
-
     })
   }
-
 }
 
 module.exports = WifiController;
