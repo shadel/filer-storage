@@ -59,7 +59,7 @@ class WifiController {
           console.log('error while scan');
       }
       else{
-          return networks();
+          return networks;
       }
     });
   }
