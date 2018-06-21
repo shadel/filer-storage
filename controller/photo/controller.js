@@ -3,23 +3,13 @@ const copydir = require('copy-dir');
 const rimraf = require('rimraf');
 const fs = require('fs');
 const fse = require('fs-extra');
+const db = require('../../db/db');
 //const drivelist = require('drivelist');
 const dir = 'Pictures';
 const TIMEOUT_TO_RECEIVE_DEVICE = 5000;
 
-const Datastore = require('nedb');
-const photoDB = new Datastore({
-  filename: __dirname + '/../../data/photoDB.db',
-  autoload: true
-});
-
-const indexDB = new Datastore({
-  filename: __dirname + '/../../data/indexDB.db',
-  autoload: true
-});
-
 class PhotoController {
-  constructor() {
+  constructor(photoDB, indexDB) {
     this.pathConfig = __dirname + '/../../config-photo.json';
     fs.readFile(this.pathConfig, 'utf8', (err, data) => {
       if (!err) {
@@ -27,6 +17,8 @@ class PhotoController {
       }
     })
     this.detectSD();
+    this.photoDB = db.getInstance().photoDB;
+    this.indexDB = db.getInstance().indexDB;
   }
 
   setDatetime(datetime) {
@@ -172,12 +164,13 @@ class PhotoController {
   }
 
   updateImageInfo(id, name) {
+    id = parseInt(id);
     return new Promise((resolve, reject) => {
       const dataStore = {
         _id: id,
         name
       };
-      photoDB.update({
+      this.photoDB.update({
         _id: id
       }, dataStore, {upsert: true}, (error) => {
         if (error) {
@@ -198,7 +191,7 @@ class PhotoController {
             // _id,
             name
           };
-          photoDB.insert(dataStore, (error) => {
+          this.photoDB.insert(dataStore, (error) => {
             if (error) {
               reject(error);
             } else {
@@ -221,7 +214,7 @@ class PhotoController {
           //   image._id = _id;
           //   _id++;
           // })
-          photoDB.insert(images, (error) => {
+          this.photoDB.insert(images, (error) => {
             if (error) {
               reject(error);
             } else {
@@ -235,7 +228,7 @@ class PhotoController {
   }
   getImageInfo(id) {
     return new Promise((resolve, reject) => {
-      photoDB.findOne({
+      this.photoDB.findOne({
         _id: parseInt(id)
       }, (error, data) => {
         if (error) {

@@ -50,9 +50,16 @@ sub.on("message", function (channel, msg) {
         console.log("connecting the camera");
         cam.connect(function () {
             console.log("connected camera");
-            //cam.setPostviewImageSize(function () {
-            //    console.log("set post view to original");
-            //});
+            //todo get the current postview, if original skip.
+            // cam.setPostviewImageSize(function (e) {
+            //     if(e){
+            //         console.log(e);
+            //     }
+            //     else{
+            //         console.log("set post view to original");
+            //     }
+            //
+            // });
         });
     }
     else if(channel=="c_disconnect"){
