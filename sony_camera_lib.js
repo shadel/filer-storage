@@ -242,7 +242,6 @@ var minVersionRequired = '2.1.4';
           }
           else if(item.type && item.type == 'focusStatus') {
               console.log(item);
-              console.log("1122");
           }
           else if(item.type && item.type == 'availableApiList') {
             self.availableApiList = item.names || [];
@@ -331,6 +330,7 @@ var minVersionRequired = '2.1.4';
           if(self.method == "old") {
             self.call('startRecMode', null, function(err) {
               if(!err && !self.connected) {
+                console.log("start--rec-mode-finished") ;
                 connected();
               } else {
                 self.connecting = false;
@@ -497,9 +497,15 @@ var minVersionRequired = '2.1.4';
        res.on('end', function() {
          console.log("SonyWifi: Retrieved preview image:", photoName);
          //todo Trieu save rawData to Picture photos and output the fileName
+         fs.writeFile(`./Pictures/${photoName}`, Buffer.concat(rawData), function(err) {
+             if(err) {
+                 return console.log(err);
+             }
+         
+             console.log(`File: ${photoName} was saved!`);
+             callback && callback(null, photoName, Buffer.concat(rawData));
+         }); 
 
-
-         callback && callback(null, photoName, Buffer.concat(rawData));
        });
       }).on('error', function(e) {
        callback && callback(e);

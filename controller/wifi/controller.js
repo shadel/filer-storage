@@ -42,7 +42,7 @@ class WifiController {
     return new Promise((resolve, reject) => {
       iwlist.scan("wlan0", (err, networks) => {
         if (err) {
-          console.log('error while scan');
+          console.log('error while scan', err);
           resolve([]);
         } else {
           console.log(networks);
