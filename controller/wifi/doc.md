@@ -17,12 +17,7 @@ There're 2 wifi networks
 ```json
 {
     "result": [
-        {
-            "name": "XYX"
-        },
-        {
-            "name": "TTT"
-        }
+        "XXX", "YYY"
     ]
 }
 ```
