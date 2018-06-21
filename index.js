@@ -49,9 +49,9 @@ sub.on("message", function (channel, msg) {
         console.log("connecting the camera");
         cam.connect(function () {
             console.log("connected camera");
-            cam.setPostviewImageSize(function () {
-                console.log("set post view to original");
-            });
+            //cam.setPostviewImageSize(function () {
+            //    console.log("set post view to original");
+            //});
         });
     }
     else if(channel=="c_disconnect"){
@@ -68,6 +68,7 @@ sub.on("message", function (channel, msg) {
     }
     else if(channel=="c_capture"){
         console.log("capture for id:" + msg);
+
         cam.halfPressShutter(function(){
             console.log("half press finished"); 
             setTimeout(function(){

@@ -242,7 +242,6 @@ var minVersionRequired = '2.1.4';
           }
           else if(item.type && item.type == 'focusStatus') {
               console.log(item);
-              console.log("1122");
           }
           else if(item.type && item.type == 'availableApiList') {
             self.availableApiList = item.names || [];
@@ -331,6 +330,7 @@ var minVersionRequired = '2.1.4';
           if(self.method == "old") {
             self.call('startRecMode', null, function(err) {
               if(!err && !self.connected) {
+                console.log("start--rec-mode-finished") ;
                 connected();
               } else {
                 self.connecting = false;
