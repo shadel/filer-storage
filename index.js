@@ -47,7 +47,12 @@ app.use(cors(corsOptionsDelegate), (req, res, next) => {
 sub.on("message", function (channel, msg) {
     if(channel=="c_connect"){
         console.log("connecting the camera");
-        cam.connect();
+        cam.connect(function () {
+            console.log("connected camera");
+            cam.setPostviewImageSize(function () {
+                console.log("set post view to original");
+            });
+        });
     }
     else if(channel=="c_disconnect"){
         console.log("disconnect");
