@@ -90,7 +90,7 @@ sub.on("message", function (channel, msg) {
                             .then(() => {
                                 console.log('store successfully');
                             });
-                      
+
                     }
                 });
             },1500);
