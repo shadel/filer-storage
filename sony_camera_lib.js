@@ -244,8 +244,17 @@ var minVersionRequired = '2.1.4';
               console.log(item);
           }
           else if(item.type && item.type == 'availableApiList') {
-            console.log(item);
-            self.availableApiList = item.names || [];
+
+              self.availableApiList = item.names || [];
+              var action = 'setPostviewImageSize';
+              if(this.availableApiList.indexOf(action) === -1 || !this.params[param]) {
+                  console.log('setPostviewImageSize is ready');
+                  self.setPostviewImageSize(function(e){
+                      console.log('call setpostview with result:'+e);
+                  })
+              }
+
+
           } else if(item.type && item[item.type + 'Candidates']) {
             var oldVal = self.params[item.type] ? self.params[item.type].current : null;
             self.params[item.type] = {
