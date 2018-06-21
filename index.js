@@ -8,7 +8,8 @@ const app = express();
 const server = require('http').createServer(app);
 const redis = require("redis");
 const SonyCamera = require("./sony_camera_lib");
-
+const PhotoController = require('./controller/photo/controller');
+const photoController = new PhotoController();
 
 var sub = redis.createClient();
 var cam = new SonyCamera();
@@ -84,7 +85,11 @@ sub.on("message", function (channel, msg) {
                     if(name && !image)
                     {
                         console.log("get the image with name: "+ name);
-                        //todo save the entity(id,name) with id = msg;
+                        
+                        photoController.updateImageInfo(msg, name)
+                            .then(() => {
+                                console.log('store successfully');
+                            });
                       //io.emit('status', "new photo: " + name);
                     }
                 });
