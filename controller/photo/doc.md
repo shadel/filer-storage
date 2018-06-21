@@ -31,7 +31,7 @@ There is image information
 
 Get photo in system
 
-**URL** : `/api/photo/:id`
+**URL** : `/api/photo/download/:id`
 
 **URL Parameters** : `id=[integer]` where `id` is the ID of the Photo on the
 server.
@@ -40,20 +40,8 @@ server.
 
 ## Success Response
 
-**Code** : `200 OK`
-
 **Content examples**
-
-There is image information
-
-```json
-{
-    "result": {
-        "_id": 10,
-        "name": "XYX"
-    }
-}
-```
+Image
 
 ## Error Responses
 
