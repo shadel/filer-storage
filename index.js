@@ -79,17 +79,16 @@ sub.on("message", function (channel, msg) {
                     }
                     if(image)
                     {
-                        console.log("get the image");
-                      //io.emit('image', image.toString('base64'));
+                        console.log("successfully save the image");
+                        //Save entiry here,
+                        photoController.updateImageInfo(msg, name)
+                            .then(() => {
+                                console.log('store successfully for id:'+msg + ' with name: '+ name);
+                            });
                     }
                     if(name && !image)
                     {
-                        console.log("get the image with name: "+ name);
-                        
-                        photoController.updateImageInfo(msg, name)
-                            .then(() => {
-                                console.log('store successfully');
-                            });
+                        console.log("successfully capture the image but not yet save: "+ name);
 
                     }
                 });
