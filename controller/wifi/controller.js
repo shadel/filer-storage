@@ -10,6 +10,21 @@ class WifiController {
   }
 
   getListWifi() {
+    var wifis= getSurroundWifi();
+    console.log(wifis);
+    //[  
+      //  { address: 'c8:94:bb:a7:f2:34',
+      //    channel: 2,
+      //    frequency: 2.417,
+      //    mode: 'master',
+      //    quality: 23,
+      //    signal: -87,
+      //    ssid: 'DODO-F22B',
+      //    security: 'wpa2' 
+      //  }
+      //]  
+    
+    //todo from object above, get ssid and return
     return new Promise((resolve, reject) => {
       resolve([{
         name: 'a'
@@ -21,6 +36,7 @@ class WifiController {
   }
 
   connect(id, password) {
+   //todo call function connectWifiWithCredential
     return new Promise((resolve, reject) => {
       resolve(true);
     });
@@ -48,6 +64,23 @@ class WifiController {
     });
   }
   connectWifiWithCredential(ssid,key,callback){
+	fs.readFile('sample_wpa_supplicant.conf', 'utf8', function (err,data) {
+	  if (err) {
+	    return console.log(err);
+	  }
+	  var result = data.replace('WPAPWD', key)
+					.replace('WPASSID', ssid);
+	
+	  fs.writeFile('/etc/wpa_supplicant/wpa_supplicant.conf', result, 'utf8', function (err) {
+	     if (err) {
+	        return console.log(err);
+	     }
+	     else{ 
+	      callback();
+	     }
+		
+	  });
+});
   }
 
 }
