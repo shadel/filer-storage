@@ -244,6 +244,7 @@ var minVersionRequired = '2.1.4';
               console.log(item);
           }
           else if(item.type && item.type == 'availableApiList') {
+            console.log(item);
             self.availableApiList = item.names || [];
           } else if(item.type && item[item.type + 'Candidates']) {
             var oldVal = self.params[item.type] ? self.params[item.type].current : null;
@@ -530,7 +531,7 @@ var minVersionRequired = '2.1.4';
     this.call('actZoom', ['out', 'start'], callback);
   };
   SonyCamera.prototype.setPostviewImageSize = function (callback) {
-    this.call('setPostviewImageSize', ['Original'], callback);
+    this.set('postviewImageSize', ['Original'], callback);
   };
 
   SonyCamera.prototype.halfPressShutter = function (callback) {
@@ -577,6 +578,7 @@ var minVersionRequired = '2.1.4';
     if(this.status != "IDLE") return callback && callback('camera not ready');
 
     var action = 'set' + param.charAt(0).toUpperCase() + param.slice(1);
+    console.log(action);
     if(this.availableApiList.indexOf(action) === -1 || !this.params[param]) {
       return callback && callback("param not available");
     }
