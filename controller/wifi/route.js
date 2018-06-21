@@ -17,9 +17,9 @@ router.route('/')
     const body = req.body;
     const id = body.id;
     const password = body.password;
-    controller.connect().then((data) => {
+    controller.connect(id, password).then(() => {
       res.status(200).json({
-        result: data
+        result: true
       });
     })
   });

@@ -6,7 +6,6 @@ const exec = require("child_process").exec;
 
 class WifiController {
   constructor() {
-
   }
 
   getListWifi() {
@@ -18,7 +17,6 @@ class WifiController {
         })
         .then(reject);
     });
-
   }
 
   connect(id, password) {
@@ -72,7 +70,6 @@ class WifiController {
       });
     })
   }
-
 }
 
 module.exports = WifiController;
