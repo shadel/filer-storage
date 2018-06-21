@@ -1,6 +1,6 @@
 # Get Photo information
 
-Get list wifi in system
+Get list photo in system
 
 **URL** : `/api/photo/:id`
 
@@ -15,7 +15,7 @@ server.
 
 **Content examples**
 
-There're 2 wifi networks
+There is image information
 
 ```json
 {
@@ -27,9 +27,9 @@ There're 2 wifi networks
 }
 ```
 
-# Set datetime for coping data from SD card
+# Set datetime 
 
-Connect wifi with id and password
+Set datetime for coping data from SD card
 
 **URL** : `/api/photo/`
 
@@ -56,4 +56,47 @@ Updating datetime to server is successful
 {
     "result": true
 }
+```
+
+# Inserting photo to database
+
+```javascript
+const name = 'world' ;
+
+insertImageInfo(name)
+    .then(() => {
+        // insert successfully
+    })
+    .catch((error) => {
+        // got an error
+    });
+```
+
+# Inserting a list photos to database
+
+```javascript
+const photos = ['world', 'chicken', 'bird'] ;
+
+insertImageList(photos)
+    .then(() => {
+        // insert successfully
+    })
+    .catch((error) => {
+        // got an error
+    });
+```
+
+# Update photo name by id to database
+
+```javascript
+const newName = 'world' ;
+const id = 20
+
+updateImageInfo(id, newName)
+    .then(() => {
+        // update successfully
+    })
+    .catch((error) => {
+        // got an error
+    });
 ```
