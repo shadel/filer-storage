@@ -69,3 +69,66 @@ Connecting to wifi network is successful
 **Code** : `500 Internal Server Error`
 
 **Content** : `{ "message": "Server error"}`
+
+# GET Wifi status
+
+Get current Wifi status
+
+**URL** : `/api/wifi/status`
+
+**Method** : `GET`
+
+**Parameters**
+
+None
+
+
+## Success Response
+
+**Code** : `200 OK`
+
+**Content examples**
+
+Connecting to wifi network is successful
+
+CONNECTED
+```json
+{
+    "result": {
+        "status": "CONNECTED",
+        "data": {
+            "ssid": "string",
+            "key_mgmt": "string",
+            "address": "string",
+        }
+    }
+}
+```
+
+DISCONNECTED
+```json
+{
+    "result": {
+        "status": "DISCONNECTED",
+        "data": "string"
+    }
+}
+```
+
+OTHER
+```json
+{
+    "result": {
+        "status": "OTHER",
+        "data": "string"
+    }
+}
+```
+
+## Error Responses
+
+**Condition** : If server can't process API
+
+**Code** : `500 Internal Server Error`
+
+**Content** : `{ "message": "Server error"}`

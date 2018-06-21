@@ -2,6 +2,7 @@ const fs = require('fs');
 const async = require('async');
 const iwlist = require('wireless-tools/iwlist');
 const exec = require("child_process").exec;
+const helper = require('./helper');
 
 
 class WifiController {
@@ -79,6 +80,18 @@ class WifiController {
       } catch (e) {
         console.log('error: ' + e);
       }
+    })
+  }
+
+  status() {
+    return new Promise((resolve, reject) => {
+      exec("sudo wpa_cli status", (error, stdout, stderr) => {
+        if (!error) {
+          resolve(helper.parseWifiStatus(stdout))
+        } else {
+          reject(error);
+        }
+      });
     })
   }
 }
