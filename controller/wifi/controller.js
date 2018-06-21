@@ -10,82 +10,67 @@ class WifiController {
   }
 
   getListWifi() {
-    //todo need to wait it done
-    var wifiAPs= this.getSurroundWifi();
-    console.log(wifiAPs);
-    //[  
-      //  { address: 'c8:94:bb:a7:f2:34',
-      //    channel: 2,
-      //    frequency: 2.417,
-      //    mode: 'master',
-      //    quality: 23,
-      //    signal: -87,
-      //    ssid: 'DODO-F22B',
-      //    security: 'wpa2' 
-      //  }
-      //]  
-    
-    //todo from object above, get ssid and return
     return new Promise((resolve, reject) => {
-      resolve([{
-        name: 'a'
-      }, {
-        name: 'b'
-      }]);
+      this.getSurroundWifi()
+        .then((networks) => {
+          const listSSID = networks.map(x => x.ssid);
+          resolve(listSSID);
+        })
+        .then(reject);
     });
 
   }
 
   connect(id, password) {
-   //todo call function connectWifiWithCredential
     return new Promise((resolve, reject) => {
-      resolve(true);
+      this.connectWifiWithCredential(id, password)
+        .then(resolve)
+        .catch(reject);
     });
   }
 
-  reboot_wlan0(callback){
-    exec("sudo wpa_cli -i wlan0 reconfigure", (error,stdout,stderr)=>
-    {
-      if(!error){
+  reboot_wlan0(callback) {
+    exec("sudo wpa_cli -i wlan0 reconfigure", (error, stdout, stderr) => {
+      if (!error) {
         callback();
-      }
-      else{
+      } else {
         console.log("error while reset wlan0");
       }
     });
   }
-  getSurroundWifi(){
-    iwlist.scan("wlan0",(err,networks)=>{
-      if(err){
+  getSurroundWifi() {
+    return new Promise((resolve, reject) => {
+      iwlist.scan("wlan0", (err, networks) => {
+        if (err) {
           console.log('error while scan');
-	return [];
-      }
-      else{
+          resolve([]);
+        } else {
           console.log(networks);
-          //todo trieu, need to wait for result  
-        
-          return networks;
-      }
-    });
+          resolve(networks);
+        }
+      });
+    })
   }
-  connectWifiWithCredential(ssid,key,callback){
-	fs.readFile('sample_wpa_supplicant.conf', 'utf8', function (err,data) {
-	  if (err) {
-	    return console.log(err);
-	  }
-	  var result = data.replace('WPAPWD', key)
-					.replace('WPASSID', ssid);
-	
-	  fs.writeFile('/etc/wpa_supplicant/wpa_supplicant.conf', result, 'utf8', function (err) {
-	     if (err) {
-	        return console.log(err);
-	     }
-	     else{ 
-	      callback();
-	     }
-		
-	  });
-});
+  connectWifiWithCredential(ssid, key) {
+    return new Promise((resolve, reject) => {
+      fs.readFile('sample_wpa_supplicant.conf', 'utf8', function (err, data) {
+        if (err) {
+          console.log(err);
+          reject(err)
+        }
+        var result = data.replace('WPAPWD', key)
+          .replace('WPASSID', ssid);
+  
+        fs.writeFile('/etc/wpa_supplicant/wpa_supplicant.conf', result, 'utf8', function (err) {
+          if (err) {
+            console.log(err);
+            reject(err);
+          } else {
+            resolve();
+          }
+        });
+      });
+    })
   }
 
 }
