@@ -164,7 +164,7 @@ class PhotoController {
       };
       photoDB.update({
         _id: id
-      }, dataStore, {}, (error) => {
+      }, dataStore, {upsert: true}, (error) => {
         if (error) {
           reject(error);
         } else {
@@ -180,7 +180,7 @@ class PhotoController {
         .then((data) => {
           const _id = data.value;
           const dataStore = {
-            _id,
+            // _id,
             name
           };
           photoDB.insert(dataStore, (error) => {
@@ -202,10 +202,10 @@ class PhotoController {
       this.getIndex()
         .then((data) => {
           const _id = data.value;
-          images.forEach((image) => {
-            image._id = _id;
-            _id++;
-          })
+          // images.forEach((image) => {
+          //   image._id = _id;
+          //   _id++;
+          // })
           photoDB.insert(images, (error) => {
             if (error) {
               reject(error);
