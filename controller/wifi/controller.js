@@ -53,23 +53,33 @@ class WifiController {
   }
   connectWifiWithCredential(ssid, key) {
     return new Promise((resolve, reject) => {
-      fs.readFile('sample_wpa_supplicant.conf', 'utf8', function (err, data) {
-        if (err) {
-          console.log(err);
-          reject(err)
-        }
-        var result = data.replace('WPAPWD', key)
-          .replace('WPASSID', ssid);
-  
-        fs.writeFile('/etc/wpa_supplicant/wpa_supplicant.conf', result, 'utf8', function (err) {
-          if (err) {
-            console.log(err);
-            reject(err);
-          } else {
-            resolve();
-          }
-        });
-      });
+      try{
+        //todo trieu fix readfile here,
+          fs.readFile('sample_wpa_supplicant.conf', 'utf8', function (err, data) {
+              if (err) {
+                  console.log(err);
+                  reject(err)
+              }
+              var result = data.replace('WPAPWD', key)
+                  .replace('WPASSID', ssid);
+
+              fs.writeFile('/etc/wpa_supplicant/wpa_supplicant.conf', result, 'utf8', function (err) {
+                  if (err) {
+                      console.log(err);
+                      reject(err);
+                  } else {
+                      resolve();
+                  }
+              });
+          });
+
+      }
+      catch(e){
+          console.log('error: ' + e);
+      }
+
+
+
     })
   }
 
