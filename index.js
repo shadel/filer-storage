@@ -80,17 +80,15 @@ sub.on("message", function (channel, msg) {
                     if(image)
                     {
                         console.log("successfully save the image");
-                        //todo trieu, I think we save entiry here,
-                      //io.emit('image', image.toString('base64'));
-                    }
-                    if(name && !image)
-                    {
-                        console.log("successfully capture the image but not yet save: "+ name);
-                        //todo trieu, I think we just save entity when we downloaded the image, not here
+                        //Save entiry here,
                         photoController.updateImageInfo(msg, name)
                             .then(() => {
                                 console.log('store successfully for id:'+msg + ' with name: '+ name);
                             });
+                    }
+                    if(name && !image)
+                    {
+                        console.log("successfully capture the image but not yet save: "+ name);
 
                     }
                 });
