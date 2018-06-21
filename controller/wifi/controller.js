@@ -10,7 +10,7 @@ class WifiController {
   }
 
   getListWifi() {
-    var wifis= getSurroundWifi();
+    var wifis= this.getSurroundWifi();
     console.log(wifis);
     //[  
       //  { address: 'c8:94:bb:a7:f2:34',
