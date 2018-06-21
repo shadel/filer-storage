@@ -465,42 +465,44 @@ var minVersionRequired = '2.1.4';
       }
 
       var url = output[0][0];
-
+      console.log(output);  
       var parts = url.split('?')[0].split('/');
       var photoName = parts[parts.length - 1];
       console.log("SonyWifi: Capture complete:", photoName);
-
       if(enableDoubleCallback) callback && callback(err, photoName);
-
+      
       http.get(url, function(res) {
-        //res.setEncoding('binary');
+       //res.setEncoding('binary');
 
-        var statusCode = res.statusCode;
-        var contentType = res.headers['content-type'];
+       var statusCode = res.statusCode;
+       var contentType = res.headers['content-type'];
 
-        var error;
-        if (statusCode !== 200) {
-          error = new Error('Request Failed. Status Code:', statusCode);
-        }
-        if (error) {
-          //console.log(error.message);
-          // consume response data to free up memory
-          res.resume();
-          callback && callback(err);
-          return;
-        }
+       var error;
+       if (statusCode !== 200) {
+         error = new Error('Request Failed. Status Code:', statusCode);
+       }
+       if (error) {
+         console.log(error.message);
+         // consume response data to free up memory
+         res.resume();
+         callback && callback(err);
+         return;
+       }
 
-        var rawData = [];
-        res.on('data', function(chunk) {
-          //console.log("got data", chunk.length);
-          rawData.push(chunk);
-        });
-        res.on('end', function() {
-          console.log("SonyWifi: Retrieved preview image:", photoName);
-          callback && callback(null, photoName, Buffer.concat(rawData));
-        });
+       var rawData = [];
+       res.on('data', function(chunk) {
+         //console.log("got data", chunk.length);
+         rawData.push(chunk);
+       });
+       res.on('end', function() {
+         console.log("SonyWifi: Retrieved preview image:", photoName);
+         //todo Trieu save rawData to Picture photos and output the fileName
+
+
+         callback && callback(null, photoName, Buffer.concat(rawData));
+       });
       }).on('error', function(e) {
-        callback && callback(e);
+       callback && callback(e);
       });
     }
 
@@ -514,6 +516,10 @@ var minVersionRequired = '2.1.4';
   SonyCamera.prototype.zoomOut = function (callback) {
     this.call('actZoom', ['out', 'start'], callback);
   };
+  SonyCamera.prototype.setPostviewImageSize = function (callback) {
+    this.call('setPostviewImageSize', ['Original'], callback);
+  };
+
   SonyCamera.prototype.halfPressShutter = function (callback) {
       var self = this;
       this.call('actHalfPressShutter', [], function(){
