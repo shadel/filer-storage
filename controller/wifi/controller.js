@@ -10,8 +10,9 @@ class WifiController {
   }
 
   getListWifi() {
-    var wifis= this.getSurroundWifi();
-    console.log(wifis);
+    //todo need to wait it done
+    var wifiAPs= this.getSurroundWifi();
+    console.log(wifiAPs);
     //[  
       //  { address: 'c8:94:bb:a7:f2:34',
       //    channel: 2,
@@ -57,8 +58,12 @@ class WifiController {
     iwlist.scan("wlan0",(err,networks)=>{
       if(err){
           console.log('error while scan');
+	return [];
       }
       else{
+          console.log(networks);
+          //todo trieu, need to wait for result  
+        
           return networks;
       }
     });
