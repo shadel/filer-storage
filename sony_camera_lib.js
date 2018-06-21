@@ -247,7 +247,7 @@ var minVersionRequired = '2.1.4';
 
               self.availableApiList = item.names || [];
               var action = 'setPostviewImageSize';
-              if(this.availableApiList.indexOf(action) === -1 || !this.params[param]) {
+              if(self.availableApiList.indexOf(action) === -1) {
                   console.log('setPostviewImageSize is ready');
                   self.setPostviewImageSize(function(e){
                       console.log('call setpostview with result:'+e);
