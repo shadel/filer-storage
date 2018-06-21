@@ -10,6 +10,11 @@ router.route('/')
         result: data
       });
     })
+    .catch((err) => {
+      res.status(500).json({
+        message: err.message
+      });
+    });
   });
 
 router.route('/')
@@ -22,6 +27,11 @@ router.route('/')
         result: true
       });
     })
+    .catch((err) => {
+      res.status(500).json({
+        message: err.message
+      });
+    });
   });
 
 module.exports = router;
