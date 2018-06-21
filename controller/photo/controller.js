@@ -1,4 +1,4 @@
-const usbDetect = require('usb-detection');
+//const usbDetect = require('usb-detection');
 const copydir = require('copy-dir');
 const rimraf = require('rimraf');
 const fs = require('fs');
