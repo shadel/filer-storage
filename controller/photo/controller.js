@@ -157,12 +157,27 @@ class PhotoController {
   forceEmpty() {
     const destPath = __dirname + '/../../' + dir;
     return new Promise((resolve, reject) => {
-      rimraf(destPath, (_error) => {
-        if (_error) {
-          resolve(true);
+      fs.readdir(destPath, (error, items) => {
+        console.log(items);
+        Promise.all(items.filter((filePath) => {
+          console.log(filePath, (/\.(gif|jpg|jpeg|tiff|png)$/i).test(filePath));
+          return (/\.(gif|jpg|jpeg|tiff|png)$/i).test(filePath);
+        }).map((filePath) => this.deleteFile(`${destPath}/${filePath}`)))
+        .then(resolve)
+        .catch(reject)
+      });
+    })
+  }
+
+  deleteFile(path) {
+    return new Promise((resolve, reject) => {
+      fs.unlink(path, (_error) => {
+        if (!_error) {
+          resolve(path);
         } else {
           reject(_error);
         }
+
       })
     })
   }

@@ -4,23 +4,7 @@ const router = new Router();
 const Controller = require('./controller');
 const controller = new Controller();
 
-router.route('/:id')
-  .get((req, res) => {
-    const id = req.params.id;
-    controller.getImageInfo(id)
-      .then((data) => {
-        res.status(200).json({
-          result: data
-        });
-      })
-      .catch((error) => {
-        res.status(500).json({
-          message: error.message
-        });
-      })
-  });
-
-  router.route('/download/:id')
+router.route('/download/:id')
   .get((req, res) => {
     const id = req.params.id;
     controller.getFilePath(id)
