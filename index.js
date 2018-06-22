@@ -14,7 +14,12 @@ const photoController = new PhotoController();
 var sub = redis.createClient();
 var pub = redis.createClient();
 var cam = new SonyCamera();
-
+// cam.connect(function (e) {
+//      cam.setPostviewImageSize(function (){
+//
+//          console.log('set post view success');
+//      })
+// })
 
 app.use(bodyParser.urlencoded({
   limit: '50mb',
@@ -44,26 +49,19 @@ app.use(cors(corsOptionsDelegate), (req, res, next) => {
   next();
 });
 
-
 //subscribe redis for msg from DJI
 sub.on("message", function (channel, msg) {
     if(channel=="c_connect"){
         console.log("connecting the camera");
         cam.connect(function () {
-            console.log("connected camera");
-            //todo get the current postview, if original skip.
-            // cam.setPostviewImageSize(function (e) {
-            //     if(e){
-            //         console.log(e);
-            //     }
-            //     else{
-            //         console.log("set post view to original");
-            //     }
-            //
-            // });
-            pub.publish("cam_connected","S");
+            cam.connect(function (e) {
+                cam.setPostviewImageSize(function (){
+                    console.log('set post view success');
+                    pub.publish("cam_connected","S");
+                    //todo if failed call pub.publish("cam_connected","F");
+                })
+            })
 
-            //todo if failed call pub.publish("cam_connected","F");
 
 
         });
@@ -89,7 +87,7 @@ sub.on("message", function (channel, msg) {
                 cam.capture(true, function(err, name, image) {
                     if(err) {
                         console.log("error when take photo: "+ err);
-                        pub.publish("capture_status","F|" + name);
+                        pub.publish("capture_status","F|" + name); //very important to send back into to android
                     }
                     if(image)
                     {
@@ -98,7 +96,7 @@ sub.on("message", function (channel, msg) {
                         photoController.updateImageInfo(msg, name)
                             .then(() => {
                                 console.log('store successfully for id:'+msg + ' with name: '+ name);
-                                pub.publish("capture_status","S|" + msg);
+				pub.publish("capture_status","S|" + msg);//very important to send back into to android		
                             });
                     }
                     if(name && !image)
@@ -120,15 +118,11 @@ sub.subscribe("c_disconnect");
 sub.subscribe("c_capture");
 sub.subscribe("c_zoomin");
 sub.subscribe("c_zoomout");
-sub.subscribe("c_onusb");
-sub.subscribe("offusb");
 
 server.listen(config.server.port, () => {
   console.log('Start Rasp Image Proxy Server at port ' + config.server.port);
   const routes = require('./routes');
   app.use('/', routes);
-  // const photoController = new PhotoController();
-  // photoController.detectSD();
 });
 
 module.exports = app;
