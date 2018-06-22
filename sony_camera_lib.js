@@ -279,7 +279,7 @@ var minVersionRequired = '2.1.4';
         var self = this;
         this.eventPending = true;
         this.callNew('getEvent', [waitForChange || false], function (err, results) {
-            console.log(results);
+
             self.eventPending = false;
             // console.log(err);
             if (!err) {
@@ -300,10 +300,8 @@ var minVersionRequired = '2.1.4';
                     }
                     else if(item.type && item.type == 'focusStatus') {
                         //todo work with focus status
-                        console.log("1122");
                         self.HasFocus = true;
                     }
-
                 }
             }
 
@@ -575,27 +573,31 @@ var minVersionRequired = '2.1.4';
 
   SonyCamera.prototype.halfPressShutter = function (callback) {
       var self = this;
+      self.hasFocus = false;
       this.call('actHalfPressShutter', [], function(){
-          callback();
-          // console.log('send half press');
-          // self._processEventsNew(false, function(){
-          //     console.log('call processed event done');
-          //     //callback && callback(err);
-          // });
-          //
-          // var _checkFocus = function(err) {
-          //     if(!err) {
-          //         if(self.hasFocus) self._processEventsNew(true, _checkFocus);
-          //         else console.log("not focus");
-          //     } else {
-          //         setTimeout(_checkFocus, 5000);
-          //     }
-          // };
-          // self._processEventsNew(false, function(){
-          //     self.hasFocus = false;
-          //     callback && callback(err);
-          //     _checkFocus();
-          // });
+          //callback();
+          console.log('send half press');
+
+          var _checkFocus = function(err) {
+              if(!err) {
+                  if(self.hasFocus) {
+                      self.hasFocus = true;
+                      console.log("focused");
+                      callback ();
+
+                  }
+                  else
+                      console.log("not focus");
+                  self._processEventsNew(true, _checkFocus);
+              } else {
+                  setTimeout(function(){
+                      _checkFocus();
+                  }, 5000);
+              }
+          };
+          self._processEventsNew(false, function(){
+              _checkFocus();
+          });
 
       });
 
