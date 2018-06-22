@@ -98,7 +98,7 @@ sub.on("message", function (channel, msg) {
                         photoController.updateImageInfo(msg, name)
                             .then(() => {
                                 console.log('store successfully for id:'+msg + ' with name: '+ name);
-                                pub.publish("capture_status","S|" + name);
+                                pub.publish("capture_status","S|" + msg);
                             });
                     }
                     if(name && !image)
