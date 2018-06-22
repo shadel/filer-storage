@@ -164,6 +164,7 @@ class PhotoController {
   }
 
   updateImageInfo(id, name) {
+    id = parseInt(id);
     return new Promise((resolve, reject) => {
       const dataStore = {
         _id: id,
