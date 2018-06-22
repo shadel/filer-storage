@@ -156,11 +156,11 @@ var minVersionRequired = '2.1.4';
                     if(error) {
                         if(error.length > 0 && error[0] == 1 && method == 'getEvent') {
                             setTimeout(function() {
-                                self.call(method, params, callback);
+                                self.callNew(method, params, callback);
                             });
                             return;
                         }
-                        console.log("SonyWifi: error during request", method, error);
+                        console.log("SonyWifi: 2 error during request", method, error);
                     }
                     //console.log("completed", error, result);
                     callback && callback(error, result);
@@ -228,7 +228,10 @@ var minVersionRequired = '2.1.4';
               console.log("SonyWifi: disconnected, trying to reconnect");
               setTimeout(function(){self.connect(); }, 2500);
             }
-            if(self.status == "IDLE") self.ready = true; else self.ready = false;
+            if(self.status == "IDLE")
+                self.ready = true;
+            else
+                self.ready = false;
             if(self.status != item.cameraStatus) {
               self.emit('status', item.cameraStatus);
               console.log("SonyWifi: status", self.status);
@@ -248,10 +251,7 @@ var minVersionRequired = '2.1.4';
               self.availableApiList = item.names || [];
               var action = 'setPostviewImageSize';
               if(self.availableApiList.indexOf(action) === -1) {
-                  console.log('setPostviewImageSize is ready');
-                  // self.setPostviewImageSize(function(e){
-                  //     console.log('call setpostview with result:'+e);
-                  // })
+
               }
 
 
@@ -279,7 +279,7 @@ var minVersionRequired = '2.1.4';
         var self = this;
         this.eventPending = true;
         this.callNew('getEvent', [waitForChange || false], function (err, results) {
-            console.log(results);
+
             self.eventPending = false;
             // console.log(err);
             if (!err) {
@@ -299,11 +299,10 @@ var minVersionRequired = '2.1.4';
                         continue;
                     }
                     else if(item.type && item.type == 'focusStatus') {
-
-                        console.log("1122");
+                        //todo work with focus status
                         self.HasFocus = true;
+                        console.log('focus has set');
                     }
-
                 }
             }
 
@@ -326,7 +325,13 @@ var minVersionRequired = '2.1.4';
             self.connected = true;
             var _checkEvents = function(err) {
               if(!err) {
-                if(self.connected) self._processEvents(true, _checkEvents); else console.log("SonyWifi: disconnected, stopping event poll");
+                if(self.connected)
+                {
+                    self._processEvents(true, _checkEvents);
+
+                }
+                else
+                    console.log("SonyWifi: disconnected, stopping event poll");
               } else {
                 setTimeout(_checkEvents, 5000);
               }
@@ -526,32 +531,59 @@ var minVersionRequired = '2.1.4';
     this.call('actZoom', ['out', 'start'], callback);
   };
   SonyCamera.prototype.setPostviewImageSize = function (callback) {
-    this.set('postviewImageSize', ['Original'], callback);
+    var self = this;
+    var setPost=function(){
+        if(self.ready){
+            self.set('postviewImageSize', 'Original', function(e){
+                if(!e){
+                    callback();
+                }
+                else{
+                    console.log("set post view error:"+e);
+                    setTimeout(
+                        function(){
+                            setPost();
+                        },2000);
+                }
+
+            });
+        }
+        else{
+            setTimeout(
+                function(){
+                    setPost();
+                },2000);
+        }
+    }
+    setPost();
   };
 
   SonyCamera.prototype.halfPressShutter = function (callback) {
       var self = this;
-      this.call('actHalfPressShutter', [], function(){
-          callback();
-          // console.log('send half press');
-          // self._processEventsNew(false, function(){
-          //     console.log('call processed event done');
-          //     //callback && callback(err);
-          // });
-          //
-          // var _checkFocus = function(err) {
-          //     if(!err) {
-          //         if(self.hasFocus) self._processEventsNew(true, _checkFocus);
-          //         else console.log("not focus");
-          //     } else {
-          //         setTimeout(_checkFocus, 5000);
-          //     }
-          // };
-          // self._processEventsNew(false, function(){
-          //     self.hasFocus = false;
-          //     callback && callback(err);
-          //     _checkFocus();
-          // });
+      self.HasFocus = false;
+      this.callNew('actHalfPressShutter', [], function(){
+          //callback();
+          var _checkFocus = function(err) {
+              if(!err) {
+                  if(self.HasFocus==true) {
+                      callback();
+                  }
+                  else
+                      {
+			setTimeout(function(){
+                      		self._processEventsNew(true, _checkFocus);
+                  		}, 3000);                        
+		      }
+                  
+              } else {
+                  setTimeout(function(){
+                      _checkFocus();
+                  }, 3000);
+              }
+          };
+          self._processEventsNew(false, function(){
+              _checkFocus();
+          });
 
       });
 
@@ -573,10 +605,10 @@ var minVersionRequired = '2.1.4';
     if(this.status != "IDLE") return callback && callback('camera not ready');
 
     var action = 'set' + param.charAt(0).toUpperCase() + param.slice(1);
-    console.log(action);
     if(this.availableApiList.indexOf(action) === -1 || !this.params[param]) {
       return callback && callback("param not available");
     }
+    console.log(this.params[param]);
     if(this.params[param].available.indexOf(value) === -1) {
       return callback && callback("value not available");
     }

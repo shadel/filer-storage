@@ -17,7 +17,12 @@ const photoController = new PhotoController();
 var sub = redis.createClient();
 var pub = redis.createClient();
 var cam = new SonyCamera();
-
+// cam.connect(function (e) {
+//      cam.setPostviewImageSize(function (){
+//
+//          console.log('set post view success');
+//      })
+// })
 
 app.use(bodyParser.urlencoded({
   limit: '50mb',
@@ -52,20 +57,14 @@ sub.on("message", function (channel, msg) {
     if(channel=="c_connect"){
         console.log("connecting the camera");
         cam.connect(function () {
-            console.log("connected camera");
-            //todo get the current postview, if original skip.
-            // cam.setPostviewImageSize(function (e) {
-            //     if(e){
-            //         console.log(e);
-            //     }
-            //     else{
-            //         console.log("set post view to original");
-            //     }
-            //
-            // });
+            cam.connect(function (e) {
+                cam.setPostviewImageSize(function (){
+                    console.log('set post view success');
+                    pub.publish("cam_connected","S");
+                    //todo if failed call pub.publish("cam_connected","F");
+                })
+            })
 
-            pub.publish("cam_connected","S");
-            //todo if failed call pub.publish("cam_connected","F");
 
 
         });
@@ -83,10 +82,7 @@ sub.on("message", function (channel, msg) {
         cam.zoomOut();
     }
     else if(channel=="c_capture"){
-        console.log("capture for id:" + msg);
-
         cam.halfPressShutter(function(){
-            console.log("half press finished"); 
             setTimeout(function(){
                 cam.capture(true, function(err, name, image) {
                     name = name.split('.').map((name, idx) => idx ? idx : msg);
@@ -105,7 +101,7 @@ sub.on("message", function (channel, msg) {
                                 
                                 console.log(`File: ${name} was saved!`);
                                 console.log('store successfully for id:'+msg + ' with name: '+ name);
-                                pub.publish("capture_status","S|" + msg);//very important to send back into to android
+				pub.publish("capture_status","S|" + msg);//very important to send back into to android		
                             });
                         } catch (ex) {
                             console.log(ex);
