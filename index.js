@@ -14,12 +14,12 @@ const photoController = new PhotoController();
 var sub = redis.createClient();
 var pub = redis.createClient();
 var cam = new SonyCamera();
-cam.connect(function (e) {
-     cam.setPostviewImageSize(function (){
-
-         console.log('set post view success');
-     })
-})
+// cam.connect(function (e) {
+//      cam.setPostviewImageSize(function (){
+//
+//          console.log('set post view success');
+//      })
+// })
 
 app.use(bodyParser.urlencoded({
   limit: '50mb',
