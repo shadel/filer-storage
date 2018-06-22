@@ -1,11 +1,10 @@
 # Get Photo information
 
-Get photo in system
+Delete all photo
 
-**URL** : `/api/photo/:id`
+**URL** : `/api/force_empty`
 
-**URL Parameters** : `id=[integer]` where `id` is the ID of the Photo on the
-server.
+**URL Parameters** : None
 
 **Method** : `GET`
 
@@ -19,13 +18,17 @@ There is image information
 
 ```json
 {
-    "result": {
-        "_id": 10,
-        "name": "XYX"
-    }
-    
+    "result": true
 }
 ```
+
+## Error Responses
+
+**Condition** : If server can't process API
+
+**Code** : `500 Internal Server Error`
+
+**Content** : `{ "message": "Server error"}`
 
 # Download Photo by id
 

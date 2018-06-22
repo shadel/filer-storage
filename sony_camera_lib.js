@@ -511,22 +511,8 @@ var minVersionRequired = '2.1.4';
        });
        res.on('end', function() {
          console.log("SonyWifi: Retrieved preview image:", photoName);
-         // save rawData to Picture photos and output the fileName
-           try {
-               fs.writeFile(`./Pictures/${photoName}`, Buffer.concat(rawData), function(err) {
-                   if(err) {
-                       return console.log(err);
-                   }
-
-                   console.log(`File: ${photoName} was saved!`);
-                   callback && callback(null, photoName, Buffer.concat(rawData));
-               });
-           }
-           catch(e){
-               console.log("error when saving: "+ e);
-           }
-
-
+          // save rawData to Picture photos and output the fileName
+          callback && callback(null, photoName, Buffer.concat(rawData));
        });
       }).on('error', function(e) {
           console.log('error when get');

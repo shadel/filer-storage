@@ -4,14 +4,12 @@ const router = new Router();
 const Controller = require('./controller');
 const controller = new Controller();
 
-router.route('/:id')
+router.route('/download/:id')
   .get((req, res) => {
     const id = req.params.id;
-    controller.getImageInfo(id)
-      .then((data) => {
-        res.status(200).json({
-          result: data
-        });
+    controller.getFilePath(id)
+      .then((imagePath) => {
+        res.download(imagePath);
       })
       .catch((error) => {
         res.status(500).json({
@@ -19,13 +17,13 @@ router.route('/:id')
         });
       })
   });
-
-router.route('/download/:id')
+router.route('/force_empty')
   .get((req, res) => {
-    const id = req.params.id;
-    controller.getFilePath(id)
-      .then((imagePath) => {
-        res.download(imagePath);
+    controller.forceEmpty()
+      .then(() => {
+        res.status(200).json({
+          result: true
+        });
       })
       .catch((error) => {
         res.status(500).json({

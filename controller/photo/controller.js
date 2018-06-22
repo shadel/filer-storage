@@ -3,13 +3,12 @@ const copydir = require('copy-dir');
 const rimraf = require('rimraf');
 const fs = require('fs');
 const fse = require('fs-extra');
-const db = require('../../db/db');
 //const drivelist = require('drivelist');
 const dir = 'Pictures';
 const TIMEOUT_TO_RECEIVE_DEVICE = 5000;
 
 class PhotoController {
-  constructor(photoDB, indexDB) {
+  constructor() {
     this.pathConfig = __dirname + '/../../config-photo.json';
     fs.readFile(this.pathConfig, 'utf8', (err, data) => {
       if (!err) {
@@ -17,8 +16,6 @@ class PhotoController {
       }
     })
     this.detectSD();
-    this.photoDB = db.getInstance().photoDB;
-    this.indexDB = db.getInstance().indexDB;
   }
 
   setDatetime(datetime) {
@@ -149,141 +146,38 @@ class PhotoController {
     // });
   }
 
-  getFilePath (id) {
+  getFilePath(id) {
+    let name = `${id}.jpg`;
     return new Promise((resolve, reject) => {
-      this.getImageInfo(id)
-        .then((data) => {
-          console.log(data);
-          const imagePath = __dirname + '/../../Pictures/' + data.name;
-          resolve(imagePath);
-        })
-        .catch((err) => {
-          reject(err);
-        })
+      const imagePath = __dirname + '/../../Pictures/' + name;
+      resolve(imagePath);
     })
   }
 
-  updateImageInfo(id, name) {
-    id = parseInt(id);
+  forceEmpty() {
+    const destPath = __dirname + '/../../' + dir;
     return new Promise((resolve, reject) => {
-      const dataStore = {
-        _id: id,
-        name
-      };
-      this.photoDB.update({
-        _id: id
-      }, dataStore, {upsert: true}, (error) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve();
-        }
-      })
-    })
-  }
-
-  insertImageInfo(name) {
-    return new Promise((resolve, reject) => {
-      this.getIndex()
-        .then((data) => {
-          const _id = data.value;
-          const dataStore = {
-            // _id,
-            name
-          };
-          this.photoDB.insert(dataStore, (error) => {
-            if (error) {
-              reject(error);
-            } else {
-              this.updateIndex()
-                .then(resolve)
-                .catch(reject);
-            }
-          })
-        })
+      fs.readdir(destPath, (error, items) => {
+        console.log(items);
+        Promise.all(items.filter((filePath) => {
+          console.log(filePath, (/\.(gif|jpg|jpeg|tiff|png)$/i).test(filePath));
+          return (/\.(gif|jpg|jpeg|tiff|png)$/i).test(filePath);
+        }).map((filePath) => this.deleteFile(`${destPath}/${filePath}`)))
+        .then(resolve)
         .catch(reject)
+      });
     })
   }
 
-  insertImageList(images) {
+  deleteFile(path) {
     return new Promise((resolve, reject) => {
-      this.getIndex()
-        .then((data) => {
-          const _id = data.value;
-          // images.forEach((image) => {
-          //   image._id = _id;
-          //   _id++;
-          // })
-          this.photoDB.insert(images, (error) => {
-            if (error) {
-              reject(error);
-            } else {
-              this.updateIndex(_id)
-                .then(resolve)
-                .catch(reject);
-            }
-          })
-        })
-    })
-  }
-  getImageInfo(id) {
-    return new Promise((resolve, reject) => {
-      this.photoDB.findOne({
-        _id: parseInt(id)
-      }, (error, data) => {
-        if (error) {
-          reject(error);
+      fs.unlink(path, (_error) => {
+        if (!_error) {
+          resolve(path);
         } else {
-          resolve(data);
+          reject(_error);
         }
-      })
-    })
-  }
 
-  getIndex() {
-    return new Promise((resolve, reject) => {
-      indexDB.findOne({
-        _id: 'index_photo'
-      }, (error, data) => {
-        if (error) {
-          reject(error);
-        } else {
-          if (!data) {
-            indexDB.insert({
-              _id: 'index_photo',
-              value: 10
-            }, (err) => {
-              if (err) {
-                reject(err);
-              } else {
-                resolve({
-                  _id: 'index_photo',
-                  value: 10
-                })
-              }
-            })
-          }else{
-            resolve(data)
-          }
-        }
-      })
-    })
-  }
-
-  updateIndex(number) {
-    return new Promise((resolve, reject) => {
-      indexDB.update({
-        _id: 'index_photo'
-      }, {
-        $inc: {
-          value: number ? number : 1
-        }
-      }, (err) => {
-        if(err) {
-          reject(err)
-        }else{
-          resolve();
-        }
       })
     })
   }
