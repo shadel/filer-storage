@@ -14,12 +14,12 @@ const photoController = new PhotoController();
 var sub = redis.createClient();
 var pub = redis.createClient();
 var cam = new SonyCamera();
-// cam.connect(function (e) {
-//      cam.setPostviewImageSize(function (){
-//
-//          console.log('set post view success');
-//      })
-// })
+cam.connect(function (e) {
+     cam.setPostviewImageSize(function (){
+
+         console.log('set post view success');
+     })
+})
 
 app.use(bodyParser.urlencoded({
   limit: '50mb',
@@ -53,18 +53,14 @@ app.use(cors(corsOptionsDelegate), (req, res, next) => {
 sub.on("message", function (channel, msg) {
     if(channel=="c_connect"){
         console.log("connecting the camera");
-        cam.connect(function () {
-            cam.connect(function (e) {
-                cam.setPostviewImageSize(function (){
-                    console.log('set post view success');
-                    pub.publish("cam_connected","S");
-                    //todo if failed call pub.publish("cam_connected","F");
-                })
+        cam.connect(function (e) {
+            cam.setPostviewImageSize(function (){
+                console.log('set post view success');
+                pub.publish("cam_connected","S");
+                //todo if failed call pub.publish("cam_connected","F");
             })
+        })
 
-
-
-        });
     }
     else if(channel=="c_disconnect"){
         console.log("disconnect");

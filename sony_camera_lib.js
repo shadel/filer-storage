@@ -551,18 +551,23 @@ var minVersionRequired = '2.1.4';
         if(self.ready){
             self.set('postviewImageSize', 'Original', function(e){
                 if(!e){
-
                     callback();
                 }
                 else{
                     console.log("set post view error:"+e);
-                    setTimeout(setPost(),2000);
+                    setTimeout(
+                        function(){
+                            setPost();
+                        },2000);
                 }
 
             });
         }
         else{
-            setTimeout(setPost(),1500);
+            setTimeout(
+                function(){
+                    setPost();
+                },2000);
         }
     }
     setPost();
