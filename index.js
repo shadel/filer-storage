@@ -12,6 +12,7 @@ const PhotoController = require('./controller/photo/controller');
 const photoController = new PhotoController();
 
 var sub = redis.createClient();
+var pub = redis.createClient();
 var cam = new SonyCamera();
 
 
@@ -60,6 +61,11 @@ sub.on("message", function (channel, msg) {
             //     }
             //
             // });
+            pub.publish("cam_connected","S");
+
+            //todo if failed call pub.publish("cam_connected","F");
+
+
         });
     }
     else if(channel=="c_disconnect"){
@@ -83,6 +89,7 @@ sub.on("message", function (channel, msg) {
                 cam.capture(true, function(err, name, image) {
                     if(err) {
                         console.log("error when take photo: "+ err);
+                        pub.publish("capture_status","F|" + name);
                     }
                     if(image)
                     {
@@ -91,6 +98,7 @@ sub.on("message", function (channel, msg) {
                         photoController.updateImageInfo(msg, name)
                             .then(() => {
                                 console.log('store successfully for id:'+msg + ' with name: '+ name);
+                                pub.publish("capture_status","S|" + name);
                             });
                     }
                     if(name && !image)
@@ -102,14 +110,7 @@ sub.on("message", function (channel, msg) {
             },1500);
         });
     }
-    else if(channel=="c_onusb"){
-        console.log("on usb");
-       //todo Khanh call function for turn on usb of camera
-    }
-    else if(channel=="c_on==offusb"){
-        console.log("off usb");
-        //todo Khanh call function for turn off usb of camera
-    }
+
     else{
     }
 
