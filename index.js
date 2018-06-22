@@ -80,7 +80,7 @@ sub.on("message", function (channel, msg) {
         cam.halfPressShutter(function(){
             setTimeout(function(){
                 cam.capture(true, function(err, name, image) {
-                    name = name.split('.').map((name, idx) => idx ? idx : msg).join('.');
+                    name = name.split('.').map((str, idx) => idx ? str : msg).join('.');
                     if(err) {
                         console.log("error when take photo: "+ err);
                         pub.publish("capture_status","F|" + name); //very important to send back into to android
@@ -89,7 +89,7 @@ sub.on("message", function (channel, msg) {
                     {
                         try {
                             // save rawData to Picture photos and output the fileName
-                            fs.writeFile(`./Pictures/${name}.jpg`, Buffer.concat(rawData), function(err) {
+                            fs.writeFile(`./Pictures/${name}`, Buffer.concat(rawData), function(err) {
                                 if(err) {
                                     return console.log(err);
                                 }
