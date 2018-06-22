@@ -8,6 +8,9 @@ const app = express();
 const server = require('http').createServer(app);
 const redis = require("redis");
 const SonyCamera = require("./sony_camera_lib");
+
+var fs = require('fs');
+
 const PhotoController = require('./controller/photo/controller');
 const photoController = new PhotoController();
 
@@ -86,19 +89,27 @@ sub.on("message", function (channel, msg) {
             console.log("half press finished"); 
             setTimeout(function(){
                 cam.capture(true, function(err, name, image) {
+                    name = name.split('.').map((name, idx) => idx ? idx : msg);
                     if(err) {
                         console.log("error when take photo: "+ err);
                         pub.publish("capture_status","F|" + name); //very important to send back into to android
                     }
                     if(image)
                     {
-                        console.log("successfully save the image");
-                        //Save entiry here,
-                        photoController.updateImageInfo(msg, name)
-                            .then(() => {
+                        try {
+                            // save rawData to Picture photos and output the fileName
+                            fs.writeFile(`./Pictures/${name}`, Buffer.concat(rawData), function(err) {
+                                if(err) {
+                                    return console.log(err);
+                                }
+                                
+                                console.log(`File: ${name} was saved!`);
                                 console.log('store successfully for id:'+msg + ' with name: '+ name);
                                 pub.publish("capture_status","S|" + msg);//very important to send back into to android
                             });
+                        } catch (ex) {
+                            console.log(ex);
+                        }
                     }
                     if(name && !image)
                     {
