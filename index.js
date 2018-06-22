@@ -53,14 +53,18 @@ app.use(cors(corsOptionsDelegate), (req, res, next) => {
 sub.on("message", function (channel, msg) {
     if(channel=="c_connect"){
         console.log("connecting the camera");
-        cam.connect(function (e) {
-            cam.setPostviewImageSize(function (){
-                console.log('set post view success');
-                pub.publish("cam_connected","S");
-                //todo if failed call pub.publish("cam_connected","F");
+        cam.connect(function () {
+            cam.connect(function (e) {
+                cam.setPostviewImageSize(function (){
+                    console.log('set post view success');
+                    pub.publish("cam_connected","S");
+                    //todo if failed call pub.publish("cam_connected","F");
+                })
             })
-        })
 
+
+
+        });
     }
     else if(channel=="c_disconnect"){
         console.log("disconnect");
@@ -75,10 +79,7 @@ sub.on("message", function (channel, msg) {
         cam.zoomOut();
     }
     else if(channel=="c_capture"){
-        console.log("capture for id:" + msg);
-
         cam.halfPressShutter(function(){
-            console.log("half press finished"); 
             setTimeout(function(){
                 cam.capture(true, function(err, name, image) {
                     if(err) {

@@ -160,7 +160,7 @@ var minVersionRequired = '2.1.4';
                             });
                             return;
                         }
-                        console.log("SonyWifi: error during request", method, error);
+                        console.log("SonyWifi: 2 error during request", method, error);
                     }
                     //console.log("completed", error, result);
                     callback && callback(error, result);
@@ -301,6 +301,7 @@ var minVersionRequired = '2.1.4';
                     else if(item.type && item.type == 'focusStatus') {
                         //todo work with focus status
                         self.HasFocus = true;
+                        console.log('focus has set');
                     }
                 }
             }
@@ -573,26 +574,25 @@ var minVersionRequired = '2.1.4';
 
   SonyCamera.prototype.halfPressShutter = function (callback) {
       var self = this;
-      self.hasFocus = false;
+      self.HasFocus = false;
       this.callNew('actHalfPressShutter', [], function(){
           //callback();
-          console.log('send half press');
-
           var _checkFocus = function(err) {
               if(!err) {
-                  if(self.hasFocus) {
-                      self.hasFocus = true;
-                      console.log("focused");
-                      callback ();
-
+                  if(self.HasFocus==true) {
+                      callback();
                   }
                   else
-                      console.log("not focus");
-                  self._processEventsNew(true, _checkFocus);
+                      {
+			setTimeout(function(){
+                      		self._processEventsNew(true, _checkFocus);
+                  		}, 3000);                        
+		      }
+                  
               } else {
                   setTimeout(function(){
                       _checkFocus();
-                  }, 5000);
+                  }, 3000);
               }
           };
           self._processEventsNew(false, function(){
