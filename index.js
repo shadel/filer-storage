@@ -57,16 +57,11 @@ sub.on("message", function (channel, msg) {
     if(channel=="c_connect"){
         console.log("connecting the camera");
         cam.connect(function () {
-            cam.connect(function (e) {
-                cam.setPostviewImageSize(function (){
+            cam.setPostviewImageSize(function (){
                     console.log('set post view success');
                     pub.publish("cam_connected","S");
                     //todo if failed call pub.publish("cam_connected","F");
                 })
-            })
-
-
-
         });
     }
     else if(channel=="c_disconnect"){
@@ -94,7 +89,7 @@ sub.on("message", function (channel, msg) {
                     {
                         try {
                             // save rawData to Picture photos and output the fileName
-                            fs.writeFile(`./Pictures/${name}`, Buffer.concat(rawData), function(err) {
+                            fs.writeFile(`./Pictures/${name}.jpg`, Buffer.concat(rawData), function(err) {
                                 if(err) {
                                     return console.log(err);
                                 }

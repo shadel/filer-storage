@@ -85,9 +85,20 @@ class WifiController {
 
   status() {
     return new Promise((resolve, reject) => {
-      exec("sudo wpa_cli status", (error, stdout, stderr) => {
+      exec("sudo iwgetid wlan0 -r", (error, stdout, stderr) => {
         if (!error) {
-          resolve(helper.parseWifiStatus(stdout))
+	  if(stdout){
+            if(stdout != '\n'){
+               resolve({status: 'CONNECTED'});
+            }
+	    else{
+               resolve({status: 'DISCONNECTED'});
+	    }
+	    
+          }	
+          else{
+            reject(error);
+          }
         } else {
           reject(error);
         }
