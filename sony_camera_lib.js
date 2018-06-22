@@ -156,7 +156,7 @@ var minVersionRequired = '2.1.4';
                     if(error) {
                         if(error.length > 0 && error[0] == 1 && method == 'getEvent') {
                             setTimeout(function() {
-                                self.call(method, params, callback);
+                                self.callNew(method, params, callback);
                             });
                             return;
                         }
@@ -574,7 +574,7 @@ var minVersionRequired = '2.1.4';
   SonyCamera.prototype.halfPressShutter = function (callback) {
       var self = this;
       self.hasFocus = false;
-      this.call('actHalfPressShutter', [], function(){
+      this.callNew('actHalfPressShutter', [], function(){
           //callback();
           console.log('send half press');
 
