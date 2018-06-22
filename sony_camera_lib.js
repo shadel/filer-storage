@@ -228,7 +228,10 @@ var minVersionRequired = '2.1.4';
               console.log("SonyWifi: disconnected, trying to reconnect");
               setTimeout(function(){self.connect(); }, 2500);
             }
-            if(self.status == "IDLE") self.ready = true; else self.ready = false;
+            if(self.status == "IDLE")
+                self.ready = true;
+            else
+                self.ready = false;
             if(self.status != item.cameraStatus) {
               self.emit('status', item.cameraStatus);
               console.log("SonyWifi: status", self.status);
@@ -248,10 +251,7 @@ var minVersionRequired = '2.1.4';
               self.availableApiList = item.names || [];
               var action = 'setPostviewImageSize';
               if(self.availableApiList.indexOf(action) === -1) {
-                  console.log('setPostviewImageSize is ready');
-                  // self.setPostviewImageSize(function(e){
-                  //     console.log('call setpostview with result:'+e);
-                  // })
+
               }
 
 
@@ -299,7 +299,7 @@ var minVersionRequired = '2.1.4';
                         continue;
                     }
                     else if(item.type && item.type == 'focusStatus') {
-
+                        //todo work with focus status
                         console.log("1122");
                         self.HasFocus = true;
                     }
@@ -326,7 +326,13 @@ var minVersionRequired = '2.1.4';
             self.connected = true;
             var _checkEvents = function(err) {
               if(!err) {
-                if(self.connected) self._processEvents(true, _checkEvents); else console.log("SonyWifi: disconnected, stopping event poll");
+                if(self.connected)
+                {
+                    self._processEvents(true, _checkEvents);
+
+                }
+                else
+                    console.log("SonyWifi: disconnected, stopping event poll");
               } else {
                 setTimeout(_checkEvents, 5000);
               }
@@ -540,7 +546,26 @@ var minVersionRequired = '2.1.4';
     this.call('actZoom', ['out', 'start'], callback);
   };
   SonyCamera.prototype.setPostviewImageSize = function (callback) {
-    this.set('postviewImageSize', ['Original'], callback);
+    var self = this;
+    var setPost=function(){
+        if(self.ready){
+            self.set('postviewImageSize', 'Original', function(e){
+                if(!e){
+
+                    callback();
+                }
+                else{
+                    console.log("set post view error:"+e);
+                    setTimeout(setPost(),2000);
+                }
+
+            });
+        }
+        else{
+            setTimeout(setPost(),1500);
+        }
+    }
+    setPost();
   };
 
   SonyCamera.prototype.halfPressShutter = function (callback) {
@@ -587,10 +612,10 @@ var minVersionRequired = '2.1.4';
     if(this.status != "IDLE") return callback && callback('camera not ready');
 
     var action = 'set' + param.charAt(0).toUpperCase() + param.slice(1);
-    console.log(action);
     if(this.availableApiList.indexOf(action) === -1 || !this.params[param]) {
       return callback && callback("param not available");
     }
+    console.log(this.params[param]);
     if(this.params[param].available.indexOf(value) === -1) {
       return callback && callback("value not available");
     }
