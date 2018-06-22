@@ -85,7 +85,7 @@ sub.on("message", function (channel, msg) {
         cam.halfPressShutter(function(){
             setTimeout(function(){
                 cam.capture(true, function(err, name, image) {
-                    name = name.split('.').map((name, idx) => idx ? idx : msg);
+                    name = name.split('.').map((name, idx) => idx ? idx : msg).join('.');
                     if(err) {
                         console.log("error when take photo: "+ err);
                         pub.publish("capture_status","F|" + name); //very important to send back into to android
