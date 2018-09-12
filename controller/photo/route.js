@@ -9,7 +9,9 @@ router.route('/download/:id')
     const id = req.params.id;
     controller.getFilePath(id)
       .then((imagePath) => {
-        res.download(imagePath);
+        setTimeout(() => {
+          res.download(imagePath);
+        }, 300);
       })
       .catch((error) => {
         res.status(500).json({

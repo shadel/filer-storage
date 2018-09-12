@@ -8,7 +8,7 @@ const app = express();
 const server = require('http').createServer(app);
 const redis = require("redis");
 const SonyCamera = require("./sony_camera_lib");
-
+const queue = require('express-queue');
 var fs = require('fs');
 
 const PhotoController = require('./controller/photo/controller');
@@ -47,10 +47,10 @@ const corsOptionsDelegate = (req, callback) => {
   }
   callback(null, corsOptions); // callback expects two parameters: error and options
 };
-
-app.use(cors(corsOptionsDelegate), (req, res, next) => {
-  next();
-});
+app.use('/api/photo/download/:id', queue({ activeLimit: 1, queuedLimit: -1 }));
+// app.use(cors(corsOptionsDelegate), (req, res, next) => {
+//   next();
+// });
 
 //subscribe redis for msg from DJI
 sub.on("message", function (channel, msg) {
