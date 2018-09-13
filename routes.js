@@ -12,5 +12,4 @@ router.route('/').get((req, res) => {
 
 router.use('/api/wifi', wifi);
 router.use('/api/photo', photo);
-router.use('/', express.static(path.join(__dirname, 'Pictures')));
 module.exports = router;

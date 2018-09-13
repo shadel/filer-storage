@@ -4,8 +4,9 @@ const rimraf = require('rimraf');
 const fs = require('fs');
 const fse = require('fs-extra');
 //const drivelist = require('drivelist');
-const dir = 'Pictures';
+const dir = process.env.DIR || __dirname + '/../../Pictures/';
 const TIMEOUT_TO_RECEIVE_DEVICE = 5000;
+const isImage = require('is-image');
 
 class PhotoController {
   constructor() {
@@ -35,49 +36,49 @@ class PhotoController {
     })
   }
 
-    loadDevices() {
+  loadDevices() {
     const datetime = this.datetime;
     //return new Promise((resolve, reject) => {
-      //console.log('Loading devices ...');
-      //const destPath = __dirname + '/../../' + dir;
-      // drivelist.list((error, drives) => {
-      //   if (error) {
-      //     reject(error);
-      //   } else {
-      //     const listPromiseDrives = [];
-      //     drives.forEach(element => {
-      //       const promiseDrive = new Promise((resolveDrive, rejectDrive) => {
-      //         if (element.isUSB) {
-      //           rimraf(destPath, (_error) => {
-      //             if (!_error) {
-      //               const listPromisePoints = [];
-      //               element.mountpoints.forEach((point) => {
-      //                 const promise = new Promise((_resolve, _reject) => {
-      //                   var path = point.path;
-      //                   this.copyFiles(datetime, path, destPath)
-      //                     .then(_resolve)
-      //                     .catch(_reject);
-      //                 });
-      //                 listPromisePoints.push(promise);
-      //               })
-      //               Promise.all(listPromisePoints)
-      //                 .then(resolveDrive)
-      //                 .catch(rejectDrive);
-      //             } else {
-      //               rejectDrive(_error)
-      //             }
-      //           })
-      //         } else {
-      //           resolveDrive();
-      //         }
-      //       })
-      //       listPromiseDrives.push(promiseDrive);
-      //     });
-      //     Promise.all(listPromiseDrives)
-      //       .then(resolve)
-      //       .catch(reject);
-      //   }
-      // });
+    //console.log('Loading devices ...');
+    //const destPath = __dirname + '/../../' + dir;
+    // drivelist.list((error, drives) => {
+    //   if (error) {
+    //     reject(error);
+    //   } else {
+    //     const listPromiseDrives = [];
+    //     drives.forEach(element => {
+    //       const promiseDrive = new Promise((resolveDrive, rejectDrive) => {
+    //         if (element.isUSB) {
+    //           rimraf(destPath, (_error) => {
+    //             if (!_error) {
+    //               const listPromisePoints = [];
+    //               element.mountpoints.forEach((point) => {
+    //                 const promise = new Promise((_resolve, _reject) => {
+    //                   var path = point.path;
+    //                   this.copyFiles(datetime, path, destPath)
+    //                     .then(_resolve)
+    //                     .catch(_reject);
+    //                 });
+    //                 listPromisePoints.push(promise);
+    //               })
+    //               Promise.all(listPromisePoints)
+    //                 .then(resolveDrive)
+    //                 .catch(rejectDrive);
+    //             } else {
+    //               rejectDrive(_error)
+    //             }
+    //           })
+    //         } else {
+    //           resolveDrive();
+    //         }
+    //       })
+    //       listPromiseDrives.push(promiseDrive);
+    //     });
+    //     Promise.all(listPromiseDrives)
+    //       .then(resolve)
+    //       .catch(reject);
+    //   }
+    // });
     //})
   }
 
@@ -147,24 +148,24 @@ class PhotoController {
   }
 
   getFilePath(id) {
-    let name = `${id}.jpg`;
+    let name = id;
     return new Promise((resolve, reject) => {
-      const imagePath = __dirname + '/../../Pictures/' + name;
+      const imagePath = dir + name;
       resolve(imagePath);
     })
   }
 
   forceEmpty() {
-    const destPath = __dirname + '/../../' + dir;
+    const destPath = dir;
     return new Promise((resolve, reject) => {
       fs.readdir(destPath, (error, items) => {
         console.log(items);
         Promise.all(items.filter((filePath) => {
-          console.log(filePath, (/\.(gif|jpg|jpeg|tiff|png)$/i).test(filePath));
-          return (/\.(gif|jpg|jpeg|tiff|png)$/i).test(filePath);
-        }).map((filePath) => this.deleteFile(`${destPath}/${filePath}`)))
-        .then(resolve)
-        .catch(reject)
+            console.log(filePath, (/\.(gif|jpg|jpeg|tiff|png)$/i).test(filePath));
+            return (/\.(gif|jpg|jpeg|tiff|png)$/i).test(filePath);
+          }).map((filePath) => this.deleteFile(`${destPath}/${filePath}`)))
+          .then(resolve)
+          .catch(reject)
       });
     })
   }
@@ -181,6 +182,27 @@ class PhotoController {
       })
     })
   }
-}
 
+  getFolderContent() {
+    return new Promise((relv, rejc) => {
+      const path = dir;
+      fs.readdir(path, (error, items) => {
+        if (!error) {
+          const listImages = [];
+          items.forEach((item) => {
+            const filePath = `${path}${item}`;
+            if(isImage(filePath)) {
+              listImages.push(item);
+            }
+          });
+          relv({
+            images: listImages
+          })
+        } else {
+          rejc(error)
+        }
+      });
+    })
+  }
+}
 module.exports = PhotoController;

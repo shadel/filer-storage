@@ -19,6 +19,19 @@ router.route('/download/:id')
         });
       })
   });
+router.route('/')
+  .get((req, res) => {
+    const id = req.params.id;
+    controller.getFolderContent()
+      .then((data) => {
+        res.json(data);
+      })
+      .catch((error) => {
+        res.status(500).json({
+          message: error.message
+        });
+      })
+  });
 router.route('/force_empty')
   .get((req, res) => {
     controller.forceEmpty()

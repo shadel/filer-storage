@@ -10,7 +10,7 @@ const redis = require("redis");
 const SonyCamera = require("./sony_camera_lib");
 const queue = require('express-queue');
 var fs = require('fs');
-
+var dir = process.env.DIR || __dirname + '/Pictures/'
 const PhotoController = require('./controller/photo/controller');
 const photoController = new PhotoController();
 
@@ -89,7 +89,7 @@ sub.on("message", function (channel, msg) {
                     {
                         try {
                             // save rawData to Picture photos and output the fileName
-				fs.writeFile(`./Pictures/${msg}.jpg`, image, function(err) {
+				fs.writeFile(`${dir}${msg}.jpg`, image, function(err) {
                                 if(err) {
                                     return console.log(err);
                                 }
