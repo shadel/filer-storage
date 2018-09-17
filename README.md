@@ -22,6 +22,4 @@ Start server at port 3000
 
 * [Photo features](controller/photo/doc.md) : `/api/photo/`
 
-#### Wifi API
 
-* [Wifi Features](controller/wifi/doc.md) : `/api/wifi/`
