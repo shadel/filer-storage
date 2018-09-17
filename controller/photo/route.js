@@ -19,10 +19,26 @@ router.route('/download/:id')
         });
       })
   });
-router.route('/')
+router.route('/thumbnail/:id')
   .get((req, res) => {
     const id = req.params.id;
-    controller.getFolderContent()
+    controller.getFilePathThumb(id)
+      .then((imagePath) => {
+        setTimeout(() => {
+          res.download(imagePath);
+        }, 300);
+      })
+      .catch((error) => {
+        res.status(500).json({
+          message: error.message
+        });
+      })
+  });
+router.route('/explore/:page/:number')
+  .get((req, res) => {
+    const page = parseInt(req.params.page);
+    const number = parseInt(req.params.number);
+    controller.getFolderContent(page, number)
       .then((data) => {
         res.json(data);
       })
@@ -47,28 +63,4 @@ router.route('/force_empty')
       })
   });
 
-router.route('/')
-  .post((req, res) => {
-    const datetime = req.body.datetime;
-    controller.setDatetime(datetime)
-      .then(() => {
-        controller.loadDevices()
-          .then(() => {
-            console.log('copied files successfully!');
-            res.status(200).json({
-              result: true
-            });
-          })
-          .catch((err) => {
-            res.status(500).json({
-              message: err.message
-            });
-          });
-      })
-      .catch((error) => {
-        res.status(500).json({
-          message: error.message
-        });
-      })
-  });
 module.exports = router;
