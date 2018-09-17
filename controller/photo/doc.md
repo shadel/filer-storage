@@ -55,21 +55,44 @@ Image
 **Content** : `{ "message": "Server error"}`
 
 
-# Set datetime 
 
-Set datetime for coping data from SD card
+# Download Thumbnail Photo by id
 
-**URL** : `/api/photo/`
+Get photo in system
 
-**Method** : `POST`
+**URL** : `/api/photo/thumbnail/:id`
 
-**Data constraints**
+**URL Parameters** : `id=[integer]` where `id` is the ID of the Photo on the
+server.
 
-```json
-{
-    "datetime": "Wed Jun 10 2018 17:47:14",
-}
-```
+**Method** : `GET`
+
+## Success Response
+
+**Content examples**
+Image
+
+## Error Responses
+
+**Condition** : If server can't process API
+
+**Code** : `500 Internal Server Error`
+
+**Content** : `{ "message": "Server error"}`
+
+
+
+# Get list Images 
+
+Get list images from disk
+
+**URL** : `/api/photo/explore/:page/:number`
+
+**URL Parameters** : `page=[integer]` where `page` is number of page, start is 1
+
+**URL Parameters** : `number=[integer]` where `number` is number of photo in a page
+
+**Method** : `GET`
 
 
 ## Success Response
@@ -82,7 +105,9 @@ Updating datetime to server is successful
 
 ```json
 {
-    "result": true
+    "images": ["0015.jpg","0016.jpg","0017.jpg","0018.jpg"],
+    "pages":7,
+    "total":101
 }
 ```
 
