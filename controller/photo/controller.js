@@ -62,7 +62,7 @@ class PhotoController {
           resolve(imagePath);  
         }else {
           sharp(src)
-          .resize(250)
+          .resize(500)
           .toFile(imagePath, (err, info) => {
             if(err) {
               reject(err)
