@@ -17,6 +17,7 @@ app.use(bodyParser.json({
 
 app.use('/api/photo/download/:id', queue({ activeLimit: 1, queuedLimit: -1 }));
 app.use('/api/photo/thumbnail/:id', queue({ activeLimit: 10, queuedLimit: -1 }));
+
 server.listen(config.server.port, () => {
   console.log('Start Rasp Image Proxy Server at port ' + config.server.port);
   const routes = require('./routes');

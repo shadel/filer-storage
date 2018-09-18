@@ -4,6 +4,7 @@ const fs = require('fs');
 const _path = require('path');
 const rootPath = _path.join(__dirname, '/../..');
 const dir = process.env.DIR || _path.join(rootPath, '/Pictures/');
+const cacheDir = process.env.CACHE || _path.join(rootPath, '/cache/');
 const isImage = require('is-image');
 const sharp = require('sharp');
 
@@ -13,6 +14,16 @@ class PhotoController {
     fs.readFile(this.pathConfig, 'utf8', (err, data) => {
       if (!err) {
         this.datetime = JSON.parse(data).datetime;
+      }
+    })
+    fs.exists(dir, (exists) => {
+      if(!exists) {
+        fs.mkdirSync(dir);
+      }
+    })
+    fs.exists(cacheDir, (exists) => {
+      if(!exists) {
+        fs.mkdirSync(cacheDir);
       }
     })
   }
@@ -44,19 +55,22 @@ class PhotoController {
 
   getFilePathThumb(id) {
     return new Promise((resolve, reject) => {
-      this.getFilePath(id).then((imagePath)=>{
-        const dest = imagePath.replace(/(\.[\w\d_-]+)$/i, '_thumb$1');
-        fs.exists(dest, (exists) => {
-          if(exists) {
-            resolve(dest);  
-          }else {
-            sharp(imagePath)
-            .resize(250)
-            .toFile(dest, (err, info) => {
-              resolve(dest);
-            });
-          }
-        })
+      const imagePath = cacheDir + id;
+      const src = dir + id;
+      fs.exists(imagePath, (exists) => {
+        if(exists) {
+          resolve(imagePath);  
+        }else {
+          sharp(src)
+          .resize(250)
+          .toFile(imagePath, (err, info) => {
+            if(err) {
+              reject(err)
+            }else{
+              resolve(imagePath);
+            }
+          });
+        }
       })
     })
   }
@@ -97,7 +111,7 @@ class PhotoController {
           const listImages = [];
           items.forEach((item) => {
             const filePath = `${path}${item}`;
-            if(isImage(filePath) && filePath.indexOf('_thumb.') === -1 ) {
+            if(isImage(filePath)) {
               listImages.push(item);
             }
           });

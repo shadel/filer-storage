@@ -4,3 +4,4 @@ Pictures
 .vscode
 package-lock.json
 data
+cache

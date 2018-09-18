@@ -5,6 +5,15 @@ Install package
 > npm install
 ```
 
+### Setup enviroment
+Setup directory for images folder and cache folder
+Cache folder permission should be available to be created thumbnail images on this.
+
+```
+DIR=/home/quaywin/Downloads/
+CACHE=/home/quaywin/cache/
+```
+
 ### Start server
 Start server at port 3000
 
